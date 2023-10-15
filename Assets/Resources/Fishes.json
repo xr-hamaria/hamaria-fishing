@@ -5,6 +5,7 @@
       "model": "Model Path",
       "maxSize": 15,
       "minSize": 5,
+      "interestLevel": 1.0,
       "difficulty": 5
     }
   ]

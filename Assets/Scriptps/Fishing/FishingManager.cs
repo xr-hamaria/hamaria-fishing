@@ -1,19 +1,19 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Transactions;
 using UnityEngine;
 
 public class FishingManager : MonoBehaviour
 {
     private bool _isFloatOnWater = false;
     private bool _isFishOnLod = false;
+    
     private Fish _currentFish;
     private JsonManager _jsonManager;
+    
     private float _fishingTimer = 0.0f;
     private float _reelRotationAmount = 0.0f;
-
-    public bool isFloatOnWater
+    private float _fishInterest = 0.0f;
+    private float _failTime = 0.0f;
+    
+    public bool IsFloatOnWater
     {
         get
         {
@@ -26,7 +26,7 @@ public class FishingManager : MonoBehaviour
         }
     }
 
-    public bool isFishOnLod
+    public bool IsFishOnLod
     {
         get
         {
@@ -39,7 +39,7 @@ public class FishingManager : MonoBehaviour
             _isFishOnLod = value;
         }
     }
-
+    
     public float ReelRotationAmount
     {
         get
@@ -57,11 +57,16 @@ public class FishingManager : MonoBehaviour
     private void Start()
     {
         _jsonManager = new JsonManager();
-        int randomNum = UnityEngine.Random.Range(0, _jsonManager.FishDataJson.fishData.Length);
-        _currentFish = _jsonManager.FishDataJson.fishData[randomNum];
+        ChooseRandomFish();
     }
 
     void Update()
+    {
+        WaitForFishBite();
+        ReelInFish();
+    }
+
+    void WaitForFishBite()
     {
         //After 5 sec Fish get the float
         if (_isFloatOnWater　&& !_isFishOnLod)
@@ -69,18 +74,70 @@ public class FishingManager : MonoBehaviour
             _fishingTimer += Time.deltaTime;
             if (_fishingTimer > 5.0f)
             {
-                isFishOnLod = true;
+                IsFishOnLod = true;
             }
         }
         else if(_fishingTimer != 0.0f)
         {
             _fishingTimer = 0.0f;
         }
-
-        if (isFishOnLod)
+    }
+    
+    //function name should be changed
+    void ReelInFish()
+    {
+        if (_isFishOnLod)
         {
+            _fishInterest += _currentFish.interestLevel * UnityEngine.Random.Range(0.2f, 1.0f);
             
+            // if Reel too much, fail count will be increased
+            if (_reelRotationAmount > _fishInterest)
+            {
+                _failTime += Time.deltaTime;
+            }
+
+            // if fail count accumulate above difficulty, fishing will fail
+            if (_failTime > _currentFish.difficulty)
+            {
+                Fail();
+            }
+            else if (_reelRotationAmount > _currentFish.reelAmount)
+            {
+                Success();
+            }
         }
+    }
+
+    private void ChooseRandomFish()
+    {
+        int randomNum = UnityEngine.Random.Range(0, _jsonManager.FishDataJson.fishData.Length);
+        _currentFish = _jsonManager.FishDataJson.fishData[randomNum];
+    }
+    
+    private void Fail()
+    {
+        ResetValuables();
+        ChooseRandomFish();
+        
+        //Events will be Here;
+    }
+
+    private void Success()
+    {
+        ResetValuables();
+        ChooseRandomFish();
+        
+        //Events will be Here
+    }
+
+    private void ResetValuables()
+    {
+        _isFloatOnWater = false;
+        _isFishOnLod = false;
+        _fishingTimer = 0.0f;
+        _reelRotationAmount = 0.0f;
+        _fishInterest = 0.0f;
+        _failTime = 0.0f;        
         
     }
 }
