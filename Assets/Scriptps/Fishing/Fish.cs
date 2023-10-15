@@ -1,35 +1,15 @@
-using UnityEngine;
-
+[System.Serializable]
 public class Fish
 {
-    //variables, their getter and setter
-    private string _name;
-    public string Name
-    {
-        get
-        {
-            return _name;
-        }
-        
-        set
-        {
-            _name = value;
-        }
-    }
-    
-    private float _size;
-    public float Size
-    {
-        get
-        {
-            return _size;
-        }
+    public string name;
+    public string model;
+    public int maxSize;
+    public int minSize;
+    public int difficulty;
+}
 
-        set
-        {
-            _size = value;
-        }
-    }
-
-    private GameObject _model;
+[System.Serializable]
+public class FishData
+{
+    public Fish[] fishData;
 }
