@@ -6,7 +6,7 @@ public class JsonManager
 {
     private FishData _fishData;
 
-    public FishData FishData
+    public FishData FishDataJson
     {
         get
         {
