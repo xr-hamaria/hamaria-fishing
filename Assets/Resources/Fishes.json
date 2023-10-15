@@ -1,0 +1,11 @@
+{
+  "fishData": [
+    {
+      "name": "Sample",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "difficulty": 5
+    }
+  ]
+}
