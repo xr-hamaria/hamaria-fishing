@@ -1,9 +1,8 @@
 using System;
-using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
-namespace Unity.VRTemplate
+namespace UnityEngine.XR.Content.Interaction
 {
     /// <summary>
     /// An interactable knob that follows the rotation of the interactor
@@ -61,10 +60,6 @@ namespace Unity.VRTemplate
                 m_CurrentOffset = 0.0f;
             }
 
-            /// <summary>
-            /// Updates current offset and base angle based on target direction.
-            /// </summary>
-            /// <param name="direction">The XZ vector used to calculate a rotation angle</param>
             public void SetTargetFromVector(Vector3 direction)
             {
                 // Set the target angle
@@ -84,7 +79,6 @@ namespace Unity.VRTemplate
         }
 
         [Serializable]
-        [Tooltip("Event called when the value of the knob is changed")]
         public class ValueChangeEvent : UnityEvent<float> { }
 
         [SerializeField]
@@ -117,7 +111,7 @@ namespace Unity.VRTemplate
         float m_PositionTrackedRadius = 0.1f;
 
         [SerializeField]
-        [Tooltip("How much controller rotation")]
+        [Tooltip("How much controller rotation ")]
         float m_TwistSensitivity = 1.5f;
 
         [SerializeField]
@@ -235,7 +229,6 @@ namespace Unity.VRTemplate
             m_Interactor = null;
         }
 
-        /// <inheritdoc />
         public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase updatePhase)
         {
             base.ProcessInteractable(updatePhase);
@@ -247,12 +240,6 @@ namespace Unity.VRTemplate
                     UpdateRotation();
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public override Transform GetAttachTransform(IXRInteractor interactor)
-        {
-            return m_Handle;
         }
 
         void UpdateRotation(bool freshCheck = false)
@@ -275,6 +262,7 @@ namespace Unity.VRTemplate
             var localUp = transform.InverseTransformDirection(interactorTransform.up);
             localUp.y = 0.0f;
             localUp.Normalize();
+
 
             if (m_PositionDriven && !freshCheck)
                 radiusOffset *= (1.0f + k_ModeSwitchDeadZone);
@@ -353,20 +341,20 @@ namespace Unity.VRTemplate
                 m_Handle.localEulerAngles = new Vector3(0.0f, angle, 0.0f);
         }
 
-        void SetValue(float newValue)
+        void SetValue(float value)
         {
             if (m_ClampedMotion)
-                newValue = Mathf.Clamp01(newValue);
+                value = Mathf.Clamp01(value);
 
             if (m_AngleIncrement > 0)
             {
                 var angleRange = m_MaxAngle - m_MinAngle;
-                var angle = Mathf.Lerp(0.0f, angleRange, newValue);
+                var angle = Mathf.Lerp(0.0f, angleRange, value);
                 angle = Mathf.Round(angle / m_AngleIncrement) * m_AngleIncrement;
-                newValue = Mathf.InverseLerp(0.0f, angleRange, angle);
+                value = Mathf.InverseLerp(0.0f, angleRange, angle);
             }
 
-            m_Value = newValue;
+            m_Value = value;
             m_OnValueChange.Invoke(m_Value);
         }
 
@@ -401,24 +389,22 @@ namespace Unity.VRTemplate
             if (m_PositionTrackedRadius <= Mathf.Epsilon)
                 return;
 
-            var knobTransform = transform;
-
             // Draw a circle from the handle point at size of position tracked radius
-            var circleCenter = knobTransform.position;
+            var circleCenter = transform.position;
 
             if (m_Handle != null)
                 circleCenter = m_Handle.position;
 
-            var circleX = knobTransform.right;
-            var circleY = knobTransform.forward;
+            var circleX = transform.right;
+            var circleY = transform.forward;
 
             Gizmos.color = Color.green;
             var segmentCounter = 0;
             while (segmentCounter < k_CircleSegments)
             {
-                var startAngle = segmentCounter * k_SegmentRatio * 2.0f * Mathf.PI;
+                var startAngle = (float)segmentCounter * k_SegmentRatio * 2.0f * Mathf.PI;
                 segmentCounter++;
-                var endAngle = segmentCounter * k_SegmentRatio * 2.0f * Mathf.PI;
+                var endAngle = (float)segmentCounter * k_SegmentRatio * 2.0f * Mathf.PI;
 
                 Gizmos.DrawLine(circleCenter + (Mathf.Cos(startAngle) * circleX + Mathf.Sin(startAngle) * circleY) * m_PositionTrackedRadius,
                     circleCenter + (Mathf.Cos(endAngle) * circleX + Mathf.Sin(endAngle) * circleY) * m_PositionTrackedRadius);
