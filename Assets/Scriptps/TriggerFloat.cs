@@ -10,7 +10,6 @@ public class TriggerFloat : MonoBehaviour
     public GameObject defaultPos;
     private CalcAcceleration targetAcceleration;
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = this.GetComponent<Rigidbody>();
@@ -23,9 +22,8 @@ public class TriggerFloat : MonoBehaviour
         isTriggered = true;
         this.transform.position = defaultPos.transform.position;
         rb.isKinematic = false;
-        Debug.Log(targetAcceleration.Acceleration);
-        rb.AddForce(targetAcceleration.Acceleration * 1000.0f, ForceMode.Acceleration);
-        // rb.AddForce(new Vector3(1000.0f, 0.0f, 0.0f), ForceMode.Acceleration);
+        Debug.Log(targetAcceleration.acceleration);
+        rb.AddForce(targetAcceleration.acceleration * 1000.0f, ForceMode.Acceleration);
     }
 
     public void Reset() {
