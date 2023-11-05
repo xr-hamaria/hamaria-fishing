@@ -9,7 +9,6 @@ public class Float : MonoBehaviour
 {
     public GameObject waterCollider;
     private FishingManager _fishingManager;
-
     // Start is called before the first frame update
     void Start()
     {

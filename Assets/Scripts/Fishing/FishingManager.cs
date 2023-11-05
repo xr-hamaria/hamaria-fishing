@@ -10,6 +10,7 @@ public class FishingManager : MonoBehaviour
     public GameObject interestLevel;
     public GameObject canvas;
     public GameObject knobCollider;
+    public GameObject fFloat;
     
     private bool _isFloatOnWater = false;
     private bool _isFishOnLod = false;
@@ -20,6 +21,7 @@ public class FishingManager : MonoBehaviour
     private RectTransform _reelMeterTransform;
     private RectTransform _interestLevelTransform;
     private Animator _UiAnimator;
+    private TriggerFloat _triggerFloat;
     
     private float _fishingTimer = 0.0f;
     private float _reelRotationAmount = 0.0f;
@@ -92,6 +94,7 @@ public class FishingManager : MonoBehaviour
         _reelMeterTransform = reelMeter.GetComponent<RectTransform>();
         _interestLevelTransform  = interestLevel.GetComponent<RectTransform>();
         _UiAnimator = canvas.GetComponent<Animator>();
+        _triggerFloat = fFloat.GetComponent<TriggerFloat>();
 
         ChooseRandomFish();
         TestLog();
@@ -155,7 +158,6 @@ public class FishingManager : MonoBehaviour
             _fishingTimer += Time.deltaTime;
             if (_fishingTimer > 3.0f)
             {
-                Debug.Log("Hit!");
                 _UiAnimator.SetTrigger("Hit");
                 IsFishOnLod = true;
             }
@@ -171,16 +173,14 @@ public class FishingManager : MonoBehaviour
     {
         if (_isFishOnLod)
         {
-            // _fishInterest += _currentFish.interestLevel * 0.5f*math.sin(Time.time);
-            // _fishInterest += 0.01f*(math.sin(Time.time) + 0.3f)+Unity.Mathematics.noise.snoise(new float2(1.0f, Time.time))*0.01f;
             _fishInterest += math.abs(Unity.Mathematics.noise.snoise(new float2(1.0f, Time.time))*0.001f);
-            Debug.Log($"InterestLevel : {_fishInterest}");
+            // Debug.Log($"InterestLevel : {_fishInterest}");
             
             // if Reel too much, fail count will be increased
-            if (_reelRotationAmount > _fishInterest)
-            {
-                _failTime += Time.deltaTime;
-            }
+            // if (_reelRotationAmount > _fishInterest)
+            // {
+            //     _failTime += Time.deltaTime;
+            // }
 
             // if fail count accumulate above difficulty, fishing will fail
             // if (_failTime > _currentFish.difficulty)
@@ -189,6 +189,7 @@ public class FishingManager : MonoBehaviour
             // }
             if (_reelRotationAmount >= 1.0f)
             {
+                Debug.Log("Success");
                 Success();
             }
         }
@@ -219,6 +220,7 @@ public class FishingManager : MonoBehaviour
 
     private void Success()
     {
+        _triggerFloat.Success(_currentFish.name);
         ResetValuables();
         ChooseRandomFish();
         
