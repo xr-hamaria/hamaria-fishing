@@ -29,5 +29,6 @@ public class TriggerFloat : MonoBehaviour
     public void Reset() {
         isTriggered = false;
         rb.isKinematic = true;
+        this.transform.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);  
     }
 }

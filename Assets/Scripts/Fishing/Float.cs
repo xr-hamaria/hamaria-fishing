@@ -16,12 +16,6 @@ public class Float : MonoBehaviour
         _fishingManager = GameObject.Find("FishingManager").GetOrAddComponent<FishingManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject == waterCollider)
@@ -31,12 +25,4 @@ public class Float : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if(collision.gameObject == waterCollider)
-        {
-            Debug.Log("DeCollide!");
-            _fishingManager.IsFloatOnWater = false;
-        }
-    }
 }

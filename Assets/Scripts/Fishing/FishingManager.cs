@@ -1,3 +1,5 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.XR.Content.Interaction;
 
@@ -5,7 +7,9 @@ public class FishingManager : MonoBehaviour
 {
     public GameObject wheel;
     public GameObject reelMeter;
+    public GameObject interestLevel;
     public GameObject canvas;
+    public GameObject knobCollider;
     
     private bool _isFloatOnWater = false;
     private bool _isFishOnLod = false;
@@ -14,6 +18,8 @@ public class FishingManager : MonoBehaviour
     private JsonManager _jsonManager;
     private XRKnob _xrKnob;
     private RectTransform _reelMeterTransform;
+    private RectTransform _interestLevelTransform;
+    private Animator _UiAnimator;
     
     private float _fishingTimer = 0.0f;
     private float _reelRotationAmount = 0.0f;
@@ -59,14 +65,41 @@ public class FishingManager : MonoBehaviour
             _reelRotationAmount = value;
         }
     }
-    
+
+    public float FishInterest
+    {
+        get
+        {
+            return _fishInterest;
+        }
+
+        set
+        {
+            if(value < 0.0f)
+            {
+                value = 0.0f;
+            }
+
+            _fishInterest = value;
+        }
+    }
+
     // Decide Current Fish in Start function.
     private void Start()
     {
-        // _jsonManager = new JsonManager();
+        _jsonManager = new JsonManager();
         _xrKnob = wheel.GetComponent<XRKnob>();
         _reelMeterTransform = reelMeter.GetComponent<RectTransform>();
+        _interestLevelTransform  = interestLevel.GetComponent<RectTransform>();
+        _UiAnimator = canvas.GetComponent<Animator>();
+
         ChooseRandomFish();
+        TestLog();
+    }
+
+    private void TestLog()
+    {
+        Debug.Log(_currentFish.name);
     }
 
     void Update()
@@ -74,6 +107,7 @@ public class FishingManager : MonoBehaviour
         WaitForFishBite();
         UpdateReelRotationAmount();
         UpdateReelMeter();
+        UpdateInterestLevel();
         ReelInFish();
     }
 
@@ -93,18 +127,36 @@ public class FishingManager : MonoBehaviour
         }
         else
         {
-        _reelMeterTransform.localScale = new Vector3(1.0f, _reelRotationAmount, 1.0f);
+            _reelMeterTransform.localScale = new Vector3(1.0f, _reelRotationAmount, 1.0f);
+        }
+    }
+
+    private void UpdateInterestLevel()
+    {
+        if(_fishInterest > 1.0f)
+        {
+            _interestLevelTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+        else if(_fishInterest < 0.0f)
+        {
+            _interestLevelTransform.localScale = new Vector3(1.0f, 0.0f, 1.0f);
+        }
+        else
+        {
+            _interestLevelTransform.localScale = new Vector3(1.0f, _fishInterest, 1.0f);
         }
     }
 
     private void WaitForFishBite()
     {
         //After 5 sec Fish get the float
-        if (_isFloatOnWater　&& !_isFishOnLod)
+        if (_isFloatOnWater && !_isFishOnLod)
         {
             _fishingTimer += Time.deltaTime;
-            if (_fishingTimer > 60.0f)
+            if (_fishingTimer > 3.0f)
             {
+                Debug.Log("Hit!");
+                _UiAnimator.SetTrigger("Hit");
                 IsFishOnLod = true;
             }
         }
@@ -119,7 +171,10 @@ public class FishingManager : MonoBehaviour
     {
         if (_isFishOnLod)
         {
-            _fishInterest += _currentFish.interestLevel * UnityEngine.Random.Range(0.2f, 1.0f);
+            // _fishInterest += _currentFish.interestLevel * 0.5f*math.sin(Time.time);
+            // _fishInterest += 0.01f*(math.sin(Time.time) + 0.3f)+Unity.Mathematics.noise.snoise(new float2(1.0f, Time.time))*0.01f;
+            _fishInterest += math.abs(Unity.Mathematics.noise.snoise(new float2(1.0f, Time.time))*0.001f);
+            Debug.Log($"InterestLevel : {_fishInterest}");
             
             // if Reel too much, fail count will be increased
             if (_reelRotationAmount > _fishInterest)
@@ -134,7 +189,7 @@ public class FishingManager : MonoBehaviour
             }
             else if (_reelRotationAmount > _currentFish.reelAmount)
             {
-                Success();
+                // Success();
             }
         }
         else
@@ -143,7 +198,7 @@ public class FishingManager : MonoBehaviour
             //Threshold should be changed
             if (_reelRotationAmount > 30f)
             {
-                Fail();
+                // Fail();
             }
         }
     }
@@ -170,13 +225,16 @@ public class FishingManager : MonoBehaviour
         //Events will be Here
     }
 
-    private void ResetValuables()
+    public void ResetValuables()
     {
         _isFloatOnWater = false;
         _isFishOnLod = false;
         _fishingTimer = 0.0f;
         _reelRotationAmount = 0.0f;
         _fishInterest = 0.0f;
-        _failTime = 0.0f;        
+        _failTime = 0.0f;
+        _xrKnob.value = 0.0f;
+        knobCollider.SetActive(false);
+        knobCollider.SetActive(true);        
     }
 }
