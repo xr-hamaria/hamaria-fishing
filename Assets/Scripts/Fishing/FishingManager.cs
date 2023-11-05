@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.Content.Interaction;
 
 public class FishingManager : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class FishingManager : MonoBehaviour
     
     private Fish _currentFish;
     private JsonManager _jsonManager;
+    private XRKnob _xrKnob;
     
     private float _fishingTimer = 0.0f;
     private float _reelRotationAmount = 0.0f;
@@ -57,6 +59,7 @@ public class FishingManager : MonoBehaviour
     private void Start()
     {
         _jsonManager = new JsonManager();
+        _xrKnob = GameObject.Find("Wheel").GetComponent<XRKnob>();
         ChooseRandomFish();
     }
 
@@ -66,13 +69,13 @@ public class FishingManager : MonoBehaviour
         ReelInFish();
     }
 
-    void WaitForFishBite()
+    private void WaitForFishBite()
     {
         //After 5 sec Fish get the float
         if (_isFloatOnWater　&& !_isFishOnLod)
         {
             _fishingTimer += Time.deltaTime;
-            if (_fishingTimer > 5.0f)
+            if (_fishingTimer > 60.0f)
             {
                 IsFishOnLod = true;
             }
@@ -84,7 +87,7 @@ public class FishingManager : MonoBehaviour
     }
     
     //function name should be changed
-    void ReelInFish()
+    private void ReelInFish()
     {
         if (_isFishOnLod)
         {
