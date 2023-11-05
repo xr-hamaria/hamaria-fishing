@@ -3,12 +3,17 @@ using UnityEngine.XR.Content.Interaction;
 
 public class FishingManager : MonoBehaviour
 {
+    public GameObject wheel;
+    public GameObject reelMeter;
+    public GameObject canvas;
+    
     private bool _isFloatOnWater = false;
     private bool _isFishOnLod = false;
     
     private Fish _currentFish;
     private JsonManager _jsonManager;
     private XRKnob _xrKnob;
+    private RectTransform _reelMeterTransform;
     
     private float _fishingTimer = 0.0f;
     private float _reelRotationAmount = 0.0f;
@@ -58,15 +63,38 @@ public class FishingManager : MonoBehaviour
     // Decide Current Fish in Start function.
     private void Start()
     {
-        _jsonManager = new JsonManager();
-        _xrKnob = GameObject.Find("Wheel").GetComponent<XRKnob>();
+        // _jsonManager = new JsonManager();
+        _xrKnob = wheel.GetComponent<XRKnob>();
+        _reelMeterTransform = reelMeter.GetComponent<RectTransform>();
         ChooseRandomFish();
     }
 
     void Update()
     {
         WaitForFishBite();
+        UpdateReelRotationAmount();
+        UpdateReelMeter();
         ReelInFish();
+    }
+
+    private void UpdateReelRotationAmount()
+    {
+        if(_xrKnob.value >= 0)
+        {
+            _reelRotationAmount = _xrKnob.value / 20.0f;
+        }
+    }
+
+    private void UpdateReelMeter()
+    {
+        if(_reelRotationAmount > 1.0f)
+        {
+            _reelMeterTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+        else
+        {
+        _reelMeterTransform.localScale = new Vector3(1.0f, _reelRotationAmount, 1.0f);
+        }
     }
 
     private void WaitForFishBite()

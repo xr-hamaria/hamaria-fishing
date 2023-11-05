@@ -343,6 +343,11 @@ namespace UnityEngine.XR.Content.Interaction
 
         void SetValue(float value)
         {
+            if(value < 0)
+            {
+                value = 0;
+            }
+
             if (m_ClampedMotion)
                 value = Mathf.Clamp01(value);
 
