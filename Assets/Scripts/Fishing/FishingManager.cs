@@ -183,13 +183,13 @@ public class FishingManager : MonoBehaviour
             }
 
             // if fail count accumulate above difficulty, fishing will fail
-            if (_failTime > _currentFish.difficulty)
+            // if (_failTime > _currentFish.difficulty)
+            // {
+            //     Fail();
+            // }
+            if (_reelRotationAmount >= 1.0f)
             {
-                Fail();
-            }
-            else if (_reelRotationAmount > _currentFish.reelAmount)
-            {
-                // Success();
+                Success();
             }
         }
         else
