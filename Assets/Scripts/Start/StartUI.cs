@@ -10,7 +10,8 @@ public class StartUI : MonoBehaviour
     [SerializeField]
     public GameObject transition;
     public GameObject cube;
-    public String sceneName;
+    public String leftSceneName;
+    public String rightSceneName;
 
     private bool isOnTransition = false;
     private bool isRightHand;
@@ -22,7 +23,8 @@ public class StartUI : MonoBehaviour
         cube.SetActive(true);
         isRightHand = false;
         StartTransition();
-        StartCoroutine(LoadScene());
+        this.GetComponent<AudioSource>().Play();
+        StartCoroutine(LoadLeftScene());
     }
 
     public void OnRightHandButtonClicked()
@@ -30,7 +32,8 @@ public class StartUI : MonoBehaviour
         cube.SetActive(true);
         isRightHand = true;
         StartTransition();
-        StartCoroutine(LoadScene());
+        this.GetComponent<AudioSource>().Play();
+        StartCoroutine(LoadRightScene());
     }
 
     private void StartTransition()
@@ -64,8 +67,16 @@ public class StartUI : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadScene() {
-        var async = SceneManager.LoadSceneAsync(sceneName);
+    private IEnumerator LoadLeftScene() {
+        var async = SceneManager.LoadSceneAsync(leftSceneName);
+
+        async.allowSceneActivation = false;
+        yield return new WaitForSeconds(5);
+        async.allowSceneActivation = true;
+    }
+
+    private IEnumerator LoadRightScene() {
+        var async = SceneManager.LoadSceneAsync(rightSceneName);
 
         async.allowSceneActivation = false;
         yield return new WaitForSeconds(5);

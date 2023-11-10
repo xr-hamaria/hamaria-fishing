@@ -6,7 +6,7 @@
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
-      "difficulty": 5
+      "difficulty": 4
     },
     {
       "name": "再試験",
@@ -14,7 +14,7 @@
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
-      "difficulty": 5
+      "difficulty": 3
     },
     {
       "name": "秀",
@@ -22,7 +22,7 @@
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
-      "difficulty": 5
+      "difficulty": 6
     },
     {
       "name": "論理回路",
@@ -38,7 +38,7 @@
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
-      "difficulty": 5
+      "difficulty": 8
     },
     {
       "name": "さば",
@@ -46,7 +46,7 @@
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
-      "difficulty": 5
+      "difficulty": 4.5
     },
     {
       "name": "まぐろ",
@@ -54,7 +54,7 @@
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
-      "difficulty": 5
+      "difficulty": 5.5
     }
   ]
 }

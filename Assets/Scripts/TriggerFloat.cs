@@ -25,19 +25,28 @@ public class TriggerFloat : MonoBehaviour
         rb = this.GetComponent<Rigidbody>();
         targetAcceleration = defaultPos.GetComponent<CalcAcceleration>();
         this.gameObject.SetActive(false);
+        Instantiate(grade, defaultPos.transform);
     }
 
     public void Success(string fishName)
     {
-        if(fishName == "単位") grade.SetActive(true);
-        if(fishName == "再試験") reTest.SetActive(true);
-        if(fishName == "秀") good.SetActive(true);
-        if(fishName == "論理回路") IC.SetActive(true);
-        if(fishName == "しずっぴー") sizuppi.SetActive(true);
-        if(fishName == "さば") saba.SetActive(true);
-        if(fishName == "まぐろ") tuna.SetActive(true);
+        Debug.Log("Instantiate");
+        GameObject prefab = null;
+        if(fishName == "単位") prefab = Instantiate(grade, this.transform.position, Quaternion.identity) as GameObject;
+        if(fishName == "再試験") prefab = Instantiate(reTest, this.transform.position, Quaternion.identity) as GameObject;
+        if(fishName == "秀") prefab = Instantiate(good, this.transform.position, Quaternion.identity) as GameObject;
+        if(fishName == "論理回路") prefab = Instantiate(IC, this.transform.position, Quaternion.identity) as GameObject;
+        if(fishName == "しずっぴー") prefab = Instantiate(sizuppi, this.transform.position, Quaternion.identity) as GameObject;
+        if(fishName == "さば") prefab = Instantiate(saba, this.transform.position, Quaternion.identity) as GameObject;
+        if(fishName == "まぐろ") prefab = Instantiate(tuna, this.transform.position, Quaternion.identity) as GameObject;
 
-        rb.AddForce((-this.transform.position + defaultPos.transform.position)*300f);
+        if (prefab != null)
+        {
+            Debug.Log("Instantiate");
+            Rigidbody prefabRb = prefab.GetComponent<Rigidbody>();
+            prefabRb.AddForce((-this.transform.position + defaultPos.transform.position)*100f);
+            rb.AddForce((-this.transform.position + defaultPos.transform.position)*150f);
+        }
     }
 
     public void OnTriggered() {
@@ -52,12 +61,12 @@ public class TriggerFloat : MonoBehaviour
         isTriggered = false;
         rb.isKinematic = true;
         this.transform.localEulerAngles = new Vector3(0.0f, 0.0f, 0.0f);  
-        grade.SetActive(false);
-        reTest.SetActive(false);
-        good.SetActive(false);
-        IC.SetActive(false);
-        sizuppi.SetActive(false);
-        saba.SetActive(false);
-        tuna.SetActive(false);
+        // grade.SetActive(false);
+        // reTest.SetActive(false);
+        // good.SetActive(false);
+        // IC.SetActive(false);
+        // sizuppi.SetActive(false);
+        // saba.SetActive(false);
+        // tuna.SetActive(false);
     }
 }

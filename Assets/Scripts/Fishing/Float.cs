@@ -8,10 +8,15 @@ using UnityEngine.XR.Content.Interaction;
 public class Float : MonoBehaviour
 {
     public GameObject waterCollider;
+    
+    private AudioSource _myAudioSource;
     private FishingManager _fishingManager;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        _myAudioSource = this.GetComponent<AudioSource>();
         _fishingManager = GameObject.Find("FishingManager").GetOrAddComponent<FishingManager>();
     }
 
@@ -19,6 +24,7 @@ public class Float : MonoBehaviour
     {
         if(collision.gameObject == waterCollider)
         {
+            _myAudioSource.Play();
             Debug.Log("Collide!");
             _fishingManager.IsFloatOnWater = true;
         }

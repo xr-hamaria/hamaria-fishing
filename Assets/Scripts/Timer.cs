@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using TMPro;
@@ -11,44 +12,62 @@ public class Timer : MonoBehaviour
     public GameObject timerUI;
     public GameObject transition;
     public GameObject UICanvas;
+    public Material transitionMaterial;
     [SerializeField]
     public string sceneName;
+    public int timeLimit = 120;
 
     private float _timer = 0.0f;
-    private const int timeLimit = 120;
+    // private const int timeLimit = 120;
     private float _timeLeft = 120.0f;
     private TMP_Text _text;
     private bool _sceneChangeFlag = false;
-    private Material _transitionMaterial;
-    private float _transitionProgress;
+    private float _transitionProgress = 0.0f;
     private Animator _uiAnimator;
+    private AudioSource _myAudioSource;
+    private bool _loadFlag;
 
     void Start()
     {
+        _loadFlag = false;
         _timer = 0.0f;
         _uiAnimator = UICanvas.GetComponent<Animator>();
         _text = timerUI.GetComponent<TMP_Text>();
-        _transitionMaterial = transition.transform.GetChild(0).gameObject.GetComponent<Renderer>().sharedMaterial;
-        _transitionMaterial.SetFloat("_Alpha", 0.0f);
+        _myAudioSource = this.GetComponent<AudioSource>();
+        // transitionMaterial = transition.transform.GetChild(0).gameObject.GetComponent<Renderer>().sharedMaterial;
+        transitionMaterial.SetFloat("_Alpha", 0.0f);
         transition.SetActive(false);
+
+        _myAudioSource.Play();
+
     }
 
-    void Update()
+    async void Update()
     {
-        _timer += Time.deltaTime;
-        _timeLeft = timeLimit - _timer;
-        UpdateUI();
-        if(_timeLeft <= 0.0f && !_sceneChangeFlag)
+        if(_timeLeft > 0.0f)
         {
+            _timer += Time.deltaTime;
+            _timeLeft = timeLimit - _timer;
+            UpdateUI();
+        }
+        else if(_timeLeft <= 0.0f && _sceneChangeFlag == false)
+        {
+            _myAudioSource.Play();
             StartTransition();
-            StartCoroutine(LoadScene());
-
+            _sceneChangeFlag = true;
+            // StartCoroutine(LoadScene());
         }
         else if(_sceneChangeFlag)
         {
-            _transitionProgress += Time.deltaTime;
-            _transitionProgress = math.clamp(_transitionProgress/4.0f - 1.0f, 0, 1);
-            _transitionMaterial.SetFloat("_Alpha", _transitionProgress);
+            // Debug.Log("SceneChange");
+            _text.SetText($"0:0");
+            _transitionProgress += Time.deltaTime/3.0f;
+            // _transitionProgress = math.clamp(_transitionProgress/5.0f, 0, 1);
+            transitionMaterial.SetFloat("_Alpha", _transitionProgress);
+            if(_transitionProgress >= 1.0f)
+            {
+                StartCoroutine(LoadScene());
+            }
         }
     }
 
@@ -69,15 +88,15 @@ public class Timer : MonoBehaviour
         var async = SceneManager.LoadSceneAsync(sceneName);
 
         async.allowSceneActivation = false;
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(0.1f);
         async.allowSceneActivation = true;
     }
 
     private void OnDestroy()
     {
-        if(_transitionMaterial != null)
+        if(transitionMaterial != null)
         {
-            Destroy(_transitionMaterial);
+            Destroy(transitionMaterial);
         }
     }
 }
