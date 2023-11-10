@@ -129,6 +129,8 @@ namespace UnityEngine.XR.Content.Interaction
 
         float m_BaseKnobRotation = 0.0f;
 
+        public bool isGrabbed = false;
+
         /// <summary>
         /// The object that is visually grabbed and manipulated
         /// </summary>
@@ -214,6 +216,7 @@ namespace UnityEngine.XR.Content.Interaction
 
         void StartGrab(SelectEnterEventArgs args)
         {
+            isGrabbed  = true;
             m_Interactor = args.interactorObject;
 
             m_PositionAngles.Reset();
@@ -226,6 +229,7 @@ namespace UnityEngine.XR.Content.Interaction
 
         void EndGrab(SelectExitEventArgs args)
         {
+            isGrabbed = false;
             m_Interactor = null;
         }
 
@@ -343,6 +347,11 @@ namespace UnityEngine.XR.Content.Interaction
 
         void SetValue(float value)
         {
+            if(value < 0)
+            {
+                value = 0;
+            }
+
             if (m_ClampedMotion)
                 value = Mathf.Clamp01(value);
 

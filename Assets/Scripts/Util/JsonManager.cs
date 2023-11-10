@@ -17,7 +17,7 @@ public class JsonManager
     //When this class be instanced, it load the json file and store the data.
     public JsonManager()
     {
-        string jsonFilePath = "Assets/Resources/fishData.json";
+        string jsonFilePath = "Assets/Resources/Fishes.json";
         string jsonString = System.IO.File.ReadAllText(jsonFilePath);
         _fishData = JsonUtility.FromJson<FishData>(jsonString);
     }

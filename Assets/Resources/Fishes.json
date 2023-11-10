@@ -1,12 +1,60 @@
 {
   "fishData": [
     {
-      "name": "Sample",
+      "name": "単位",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "interestLevel": 1.0,
+      "difficulty": 4
+    },
+    {
+      "name": "再試験",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "interestLevel": 1.0,
+      "difficulty": 3
+    },
+    {
+      "name": "秀",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "interestLevel": 1.0,
+      "difficulty": 6
+    },
+    {
+      "name": "論理回路",
       "model": "Model Path",
       "maxSize": 15,
       "minSize": 5,
       "interestLevel": 1.0,
       "difficulty": 5
+    },
+    {
+      "name": "しずっぴー",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "interestLevel": 1.0,
+      "difficulty": 8
+    },
+    {
+      "name": "さば",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "interestLevel": 1.0,
+      "difficulty": 4.5
+    },
+    {
+      "name": "まぐろ",
+      "model": "Model Path",
+      "maxSize": 15,
+      "minSize": 5,
+      "interestLevel": 1.0,
+      "difficulty": 5.5
     }
   ]
 }
